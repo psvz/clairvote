@@ -2,7 +2,7 @@
 """
 ISC License
 
-Copyright 2022 Vitaly Zuevsky
+Copyright 2022 Vitaly Zuevsky <vx at claw dot ac>
 
 Permission to use, copy, modify, and/or distribute this software for any
 purpose with or without fee is hereby granted, provided that the above
