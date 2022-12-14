@@ -215,6 +215,7 @@ if __name__ == '__main__':
     
     winscore = 0
     cycntsum = 0
+    tick = time.time()
     
     for i in range(threads):
         
@@ -229,7 +230,9 @@ if __name__ == '__main__':
             for n in nonce[i]:
                 for k in n.to_bytes(4, byteorder='big'): uri += f'{k:02x}'
     
-    print(f'\nPoW score achieved: {winscore} with {cycntsum} cycles')
+    print(f'\nPoW score achieved: {winscore} with {cycntsum} cycles in ' +
+                                            f'{int(time.time() - tick)}s')
+    
     r = get(endPoint + '/' + uri, headers=headers)
     print(f'\nRequested {r.request.url}')
     
