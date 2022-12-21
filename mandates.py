@@ -75,5 +75,14 @@ for i in range(12):
 ImageDraw.Draw(can).multiline_text((1.2 * img.size[0], 40), punch,
                                    font=font, spacing=spacing, fill=(0,0,0))
 
-enc = krock32.Encoder(); enc.update(auth_id);
-can.save('auth/' + enc.finalize() + '.png')
+enc = krock32.Encoder(); enc.update(auth_sig[-1:] + auth_id)
+base32id = enc.finalize()
+
+can.save('auth/' + base32id + '.png')
+
+token = (auth_pkey + auth_sig + auth_id).hex().upper()
+with open('auth/~list', 'a') as f: f.write(f'{base32id}  {mandate}\n')
+
+print('token-\n' + token)
+can.show()
+# QR app for the token: https://apps.apple.com/us/app/qrefine/id1210054176
