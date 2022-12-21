@@ -76,7 +76,7 @@ ImageDraw.Draw(can).multiline_text((1.2 * img.size[0], 40), punch,
                                    font=font, spacing=spacing, fill=(0,0,0))
 
 enc = krock32.Encoder(); enc.update(auth_sig[-1:] + auth_id)
-base32id = enc.finalize()
+base32id = enc.finalize() # ^ last byte of sig needed for match Crockford card
 
 can.save('auth/' + base32id + '.png')
 
