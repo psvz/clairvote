@@ -1,1 +1,1 @@
-You can try and do `source bin/activate` after cloning to rely on `venv` virtual environment, although it is not very stable, and you will likely end up installing a few packages (I put the links in comments for those imports).
+You can try and do `source bin/activate` inside cloned folder to rely on `venv` virtual environment, although it is not very stable, and you will likely end up installing a few packages (I put the links in comments for those imports).
