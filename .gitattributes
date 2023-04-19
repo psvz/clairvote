@@ -1,0 +1,4 @@
+# venv detection correction
+bin/**    linguist-vendored
+lib/**    linguist-vendored
+lib64/**  linguist-vendored

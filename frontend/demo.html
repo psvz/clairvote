@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <title>Mock polling station</title>
+
+  <head>
+    <meta charset=UTF-8>
+    
+    <link rel="icon" href="https://clairvote.org/icon192px.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script src="/dyn.js"></script>
+    <script src="/sodium.js"></script>
+    <script src="/qrious.min.js"></script>
+
+    <script>
+      function concat(a, b) // assumes arrays of the same type
+      {
+        var c = new (a.constructor)(a.length + b.length)
+        c.set(a, 0)
+        c.set(b, a.length)
+        return c
+      }
+
+      async function demo()
+      {
+        // a quirk of sodium :
+        if (typeof sodium?.crypto_sign_ed25519_sk_to_curve25519 !== "undefined")
+        {
+          const auth_public_key = sodium.from_hex('b8181704873abf8f50772804e6da7bf514679ea21273264077db788640548634')
+
+          // a signer of voting authorizations :
+          const auth_secret_key = concat(sodium.from_hex('e3d752f82e3d7364f6d253ecd5ac6592dcceee54e8f928c4022594e8ce769cd1'),
+
+                                         auth_public_key)
+
+          const totp_secret = await crypto.subtle.importKey("raw",
+
+            // Platform secret for TOTP :
+            sodium.from_hex('afa8d5f00f5816e179ba20d2b066b0689c7e02da0b6b3af4d917b25eef16333f'),
+            {
+              name: "HMAC",
+              hash: "SHA-256"
+            },
+            false, ["sign"]
+          )
+          const time_base = (new TextEncoder()).encode(Date.now() / 30000 | 0)
+          const time_remain = 30 - (Date.now() / 1000 | 0) % 30
+
+          let time_code
+          if (time_remain > 10)
+          {
+            let time_hmac = new Uint8Array(await crypto.subtle.sign("HMAC", totp_secret, time_base))
+
+            let g = [...sodium.to_hex(time_hmac).matchAll(/(\d)\D*(\d)\D*(\d)\D*(\d)\D*(\d)\D*(\d)\D*$/g)][0]
+
+            if (g) time_code = g[6] + g[5] + g[4] + g[3] + g[2] + g[1]
+            else time_code = "654321"
+
+            let sum = 0
+            time_code.replace(/\d/g, n => sum += +n)
+            sum %= 11
+
+            time_code = sum > 9 ? 'A' + time_code : sum + time_code
+          }
+          else time_code = "Reload in " + time_remain + "s"
+
+          body.innerHTML += `<h3>Booth code:&nbsp;&nbsp;
+                             <span id="bcode" style="font-family: monospace;font-size: 1.2em;">
+                             ${time_code}</span><h3><br>
+                            `
+          setTimeout(() => { bcode.textContent = "Reload" }, time_remain * 1000)
+
+          const auth_unique_id = crypto.getRandomValues(new Uint8Array(24))
+
+          const auth_signature = sodium.crypto_sign_detached(auth_unique_id, auth_secret_key)
+
+          const auth_lookup_needle = b64encode(auth_signature).slice(0, 22) // just sufficient amount of entropy
+
+          const auth_token = concat(auth_public_key, concat(auth_signature, auth_unique_id))
+
+          let docpart = `<h3>copy-paste the whole block into the first line of Authorization:</h3>
+              <pre style="font-family: monospace;font-size: 1.4em;line-height: 1.2;letter-spacing: 0.2em;">\n`
+
+          for (let i = 10; i <= auth_token.length; i += 10)
+          {
+            docpart += crock32enc(auth_token.slice(i - 10, i), 1) + '\n'
+          }
+          docpart += "</pre><br>"
+          body.innerHTML += docpart +
+            `<h3>Auth record locator in <i>solar-auth.log</i>:&nbsp;&nbsp;
+             <span style="font-family: monospace;font-size: 1.2em;">${auth_lookup_needle}</span></h3>
+             <br><canvas style="margin: 0 auto 90vh;display: flex;justify-content: center;"></canvas>
+            `
+          let bstr = '' // dodgy trick for this library :
+          auth_token.forEach(b => bstr += String.fromCharCode(b))
+
+          qrhandle = new QRious({
+
+            element: document.querySelector('canvas'),
+            level: 'H',
+            size: 300,
+            value: bstr
+          })
+        }
+        else setTimeout(demo, 250)
+      }
+    </script>
+  </head>
+
+  <body id="body" onload="demo()">
+    <h2>Demo data representing a Polling station</h2>
+    <br>
+  </body>
+</html>

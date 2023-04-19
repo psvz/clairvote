@@ -1,0 +1,18 @@
+{
+  "id": "https://clairvote.org/go.html",
+  "name": "Clairvote",
+  "icons": [
+    {
+      "src": "/icon192px.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/icon512px.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/go.html",
+  "display": "standalone"
+}

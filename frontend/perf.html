@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset=UTF-8>
+
+    <script src="/forge.min.js"></script>
+
+    <script>
+      async function test()
+      {
+        let record = 0
+        let i, j, k, pown, tick = Date.now()
+        let msg = crypto.getRandomValues(new Uint8Array(128))
+
+        for (k = 0; k < 1_000_000; k++)
+        {
+          const hash = new Uint8Array(await crypto.subtle.digest("SHA-256", msg))
+
+          pown = 0
+
+          for (i = 0; i < hash.length && hash[i] == 0; i++) pown += 8
+
+          if (i < hash.length) for (j = 1; hash[i] << j < 256; j++) pown += 1
+
+          if (record < pown) record = pown
+
+          for (i = msg.length; i > 0; ) if (++msg[--i] < 256) break
+        }
+        body.innerHTML = `<p>Million cycles took ${(Date.now() - tick)/1000} seconds, PoW score: ${record}</p>`
+
+        record = 0
+        tick = Date.now()
+        for (k = 0; k < 1_000_000; k++)
+        {
+          var yuck = ''
+          msg.forEach(b => yuck += String.fromCharCode(b))
+
+          var md = forge.md.sha256.create()
+          md.update(yuck)
+
+          const hash = Uint8Array.from(md.digest().data, c => c.charCodeAt(0))
+
+          if (k < 2) console.log(hash, new Uint8Array(await crypto.subtle.digest("SHA-256", msg)))
+
+          pown = 0
+
+          for (i = 0; i < hash.length && hash[i] == 0; i++) pown += 8
+
+          if (i < hash.length) for (j = 1; hash[i] << j < 256; j++) pown += 1
+
+          if (record < pown) record = pown
+
+          for (i = msg.length; i > 0; ) if (++msg[--i] < 256) break
+        }
+        body.innerHTML += `
+          <p>Forge million took ${(Date.now() - tick)/1000} seconds, PoW score: ${record}</p>`
+      }
+    </script>
+  </head>
+
+  <body id="body" onload="test()">
+    <p>Please, wait...</p>
+  </body>
+</html>
+
