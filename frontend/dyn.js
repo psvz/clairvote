@@ -57,6 +57,9 @@ function crock32dec(s, a) // with tail check char
   a = a || new Uint8Array()
   s = s.toUpperCase().replace(/[^0-Z*~$=]/g, "")
 
+  s = s.replace(/[O]/g, "0")
+  s = s.replace(/[IL]/g, "1")
+
   let b = new Uint8Array(1)
   while ( (v = z.indexOf(s.slice(0, 1))) >= 0 && (s = s.slice(1)))
   {
