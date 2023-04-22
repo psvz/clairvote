@@ -3,7 +3,7 @@ This is an implementation of a voting system that relies on Proof-of-Work by use
 
 Main points of value:
 - Reduced opportunity for tampering incl. by state actors and organizers
-- Reduced cost of equipment at polling stations
+- Available off the shelf equipment for polling stations
 - Near-real-time transparency and audit 
 
 [systemDesign.pdf](https://github.com/psvz/clairvote/blob/main/systemDesign.pdf) **documents architecture and building blocks.**  
