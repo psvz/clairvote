@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Clairvote</title>
+
+  <link rel="icon" href="https://clairvote.org/icon192px.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    img {
+      width: 100%;
+      height: calc(100% + 5em);
+      object-fit: cover;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    .top-over {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 75%;
+      background: linear-gradient(to top,
+        rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.95));
+    }
+    .bot-over {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      height: 5em; /* as in calc() */
+      background: linear-gradient(to top,
+        rgba(137, 134, 129, 1), rgba(137, 134, 129, 0));
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+    }
+    .top-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-evenly;
+      padding: 10px;
+      position: relative;
+    }
+    .top-row button {
+      background-color: transparent;
+      border: none;
+      font-size: 3em;
+      font-weight: bold;
+      font-family: monospace;
+      color: rgb(137, 134, 129);
+      padding: 10px 5vw;
+    }
+    .top-row button:hover {
+      border: thick outset;
+    }
+    .bot-over div{
+      width: 20em;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-evenly;
+    }
+    a {
+      font-size: 1.5em;
+      text-decoration: none;
+      color: rgb(248, 248, 248);
+    }
+  </style>
+
+  <script>
+    var firstClick = true
+    async function readDocs()
+    {
+      if (firstClick)
+      {
+        firstClick = false
+
+        let start = await fetch(
+
+          "https://raw.githubusercontent.com/psvz/clairvote/main/systemDesign.pdf"
+        )
+        let file = await start.blob()
+        let url = URL.createObjectURL(new Blob([file], {type: "application/pdf"}))
+
+        open(url, "_blank")
+
+        firstClick = true
+      }
+      return false
+    }
+  </script>
+</head>
+
+<body>
+    <img src="theme.jpg" alt="Theme Image">
+    <div class="top-over"></div>
+    <div class="top-row">
+      <button title="Mock polling station" onclick=
+        "window.open('/demo.html', '_blank')">Booth</button>
+      <button title="Power voting" onclick=
+        "window.open('/go.html', '_blank')">Elect</button>
+      <button title="Results and verification" onclick=
+        "window.open('/check.html', '_blank')">Check</button>
+    </div>
+    <div class="bot-over">
+      <div>
+        <a href="https://github.com/psvz/clairvote#soa" target="_blank">About</a>
+        <a href="javascript:readDocs()">Architecture</a>
+      </div>
+    </div>
+</body>
+</html>
