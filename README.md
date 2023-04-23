@@ -1,5 +1,6 @@
 ## <a name="soa"></a>Power voting: transparent, secure, verifiable
 [![DOI](https://zenodo.org/badge/574666861.svg)](https://zenodo.org/badge/latestdoi/574666861)
+
 This is an implementation of a voting system that relies on Proof-of-Work by user devices. It has **absolutely _positively_ nothing to do with blockchain** (in case you were assuming). Polling stations are still part of this design to tackle coercion, although going fully electronic is possible.
 
 Main points of value:
