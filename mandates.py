@@ -62,16 +62,19 @@ ImageDraw.Draw(can).text(((img.size[0] - linw) / 2, img.size[1] + linh / 2),
 
 can.paste(img)
 
-punch = ''
+punch = ''; print()
 for i in range(12):
     
     enc = krock32.Encoder(checksum=True)
     enc.update(token[:10])
     r = enc.finalize()
     
-    punch += f'{i+1:>2}:  {r[:4]}  {r[4:8]}  {r[8:12]}  {r[12:16]}  {r[16:]}\n' 
+    punch += f'{i+1:>2}:  {r[:4]}  {r[4:8]}  {r[8:12]}  {r[12:16]}  {r[16:]}\n'
+    print(f'{r[:4]}  {r[4:8]}  {r[8:12]}  {r[12:16]}  {r[16:]}')
+
     token = token[10:]
 
+print()
 ImageDraw.Draw(can).multiline_text((1.2 * img.size[0], 40), punch,
                                    font=font, spacing=spacing, fill=(0,0,0))
 
