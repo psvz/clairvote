@@ -203,9 +203,9 @@ async function check()
       <p>We publish. You can download votes file and process it locally
       to see results (server-side handling can be added in future)</p>
       <label for="voterId">Voter ID from your receipt (optional):</label>
-      <input type="text" id="voterId" size="34" spellcheck="false" autocomplete="off"
+      <input type="text" id="voterId" size="42" spellcheck="false" autocomplete="off"
         style="text-align: center;font-weight: bold;" onchange=
-        "localStorage.setItem('vid', this.value);if(this.value.length==31){logInput.value=''}else this.value=''">
+        "localStorage.setItem('vid', this.value);if(this.value.length==39){logInput.value=''}else this.value=''">
       <br><br>
       <a href="/${campaign}-vote.log" onclick="logInput.value=''"
         download>Download Current Votes File</a>

@@ -43,7 +43,6 @@ import re
 import time
 import hmac
 import ctypes
-import krock32 # https://pypi.org/project/krock32/
 import secrets
 import hashlib
 from requests import get
@@ -151,18 +150,19 @@ if __name__ == '__main__':
         
         r = get(endPoint + '/stamp', headers={"totp": totp})
         print(f'\nRequested {r.request.url}, TOTP: {totp}')
-        if r.status_code == 200: break
+        if r.ok: break
         print(f'Error {r.status_code}')
         time.sleep(1)
 
     p_utc = r.headers['p-utc']
     p_sig = r.headers['p-sig']
+    voter = r.headers['voter']
     
     while True:
         
         r = get(endPoint + '/list')
         print(f'\nRequested {r.request.url} - ballot options')
-        if r.status_code == 200: break
+        if r.ok: break
         print(f'Error {r.status_code}')
         time.sleep(1)
         
@@ -174,10 +174,6 @@ if __name__ == '__main__':
     auth_id = secrets.token_bytes(24)
     auth_sig = b64encode(auth_skey.sign(auth_id).signature)
     mandate = auth_sig.decode()[0:22] # 132 bits entropy
-    
-    e2ev = secrets.token_bytes(17) # need 130 bits in fact
-    enc = krock32.Encoder(); enc.update(e2ev); a = enc.finalize()
-    voter = f'{a[0:5]}:{a[5:9]}-{a[9:13]}-{a[13:17]}-{a[17:21]}:{a[21:26]}'
     
     headers = {
                 "auth-pkey": b64encode(auth_skey.verify_key.encode()),
@@ -237,7 +233,7 @@ if __name__ == '__main__':
     print(f'\nRequested {r.request.url}')
     
     print(f'Voter: {headers["voter"]}\nMandate: {mandate}')
-    if r.status_code == 200:
+    if r.ok:
         
         print("\nsuccess!\n")
         for k, v in r.headers.items():

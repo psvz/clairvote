@@ -55,14 +55,17 @@ function crock32dec(s, a) // with tail check char
   let v, w, x, p = 0
 
   a = a || new Uint8Array()
-  s = s.toUpperCase().replace(/[^0-Z*~$=]/g, "")
+  s = s.toUpperCase().replace(/[^0-9A-Z*~$=]/g, "")
 
   s = s.replace(/[O]/g, "0")
   s = s.replace(/[IL]/g, "1")
 
   let b = new Uint8Array(1)
-  while ( (v = z.indexOf(s.slice(0, 1))) >= 0 && (s = s.slice(1)))
+  while ( (v = s.slice(0, 1)))
   {
+    v = z.indexOf(v)
+    if ( (s = s.slice(1)) == '') break
+
     if (v >>> 5) return false
     if (p < 3)
     {
@@ -361,10 +364,7 @@ async function working()
   }
   p_utc = response.headers.get("P-UTC")
   p_sig = response.headers.get("P-SIG")
-
-  let v = crock32enc(crypto.getRandomValues(new Uint8Array(17)))
-  voter = v.slice(0, 5) + ':' + v.slice(5, 9) + '-' + v.slice(9, 13) + '-' +
-          v.slice(13, 17) + '-' + v.slice(17, 21) + ':' + v.slice(21, 26)
+  voter = response.headers.get("VOTER")
 
   main.style.fontFamily = "consolas"
   main.innerHTML = `
