@@ -287,8 +287,8 @@ async function getMandate()
   anc.download = "vote-" + campaign.toUpperCase() +
                  (new Date()).toISOString().split('T')[0] + ".html"
 
-  if (confirm("Save Receipt - you can check\n" +
-              "your vote is as casted later")) anc.click()
+  if (confirm("Save Receipt: you will need it to verify that your\n" +
+              "vote remains as cast when the results are released")) anc.click()
 
   main.appendChild(anc)
 }
